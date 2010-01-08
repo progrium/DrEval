@@ -12,7 +12,7 @@ from doctoreval import web, worker
 def start():
     worker.pool = pool.ProcessPool(worker.Servlet, min=1, max=2, timeout=30)
     yield worker.pool.start()
-    reactor.listenTCP(8123, server.Site(web.ScriptResource()))
+    reactor.listenTCP(8123, server.Site(web.EvalResource()))
 
 def main(args=None):
     log.startLogging(sys.stdout)

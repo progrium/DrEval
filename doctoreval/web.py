@@ -2,7 +2,7 @@ from twisted.web import server, resource
 from twisted.internet import defer
 from doctoreval import worker
 
-class ScriptResource(resource.Resource):
+class EvalResource(resource.Resource):
     isLeaf = True
     
     def render_POST(self, request):
