@@ -1,0 +1,40 @@
+from twisted.web import server, resource
+from twisted.internet import defer
+from doctoreval.worker import ProcessRequest
+
+class ScriptResource(resource.Resource):
+    isLeaf = True
+    
+    def render_POST(self, request):
+        @defer.inlineCallbacks
+        def _doWork(pp, request):
+            data = yield pp.doWork(ProcessRequest, 
+                decorator   =request.args.get('decorator', [None])[0] or "script()", 
+                script      =request.args.get('script', [None])[0], 
+                env         =request.args.get('env', [None])[0])            
+            request.write(data['body'])
+            request.finish()
+        _doWork(self.pp, request)
+        return server.NOT_DONE_YET
+    
+        
+    
+    def render_GET(self, request):
+        return """
+<html>
+  <head>
+    <title>Scriptd</title>
+  </head>
+  <body>
+    <form action="/" method="post">
+        Decorator:<br />
+        <textarea name="decorator"></textarea><br />
+        Script:<br />
+        <textarea name="script"></textarea><br />
+        Env:<br />
+        <textarea name="env"></textarea><br />
+        <input type="submit" value="Go" />
+    </form>
+  </body>
+</html>
+"""
