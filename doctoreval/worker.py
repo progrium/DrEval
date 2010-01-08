@@ -4,6 +4,8 @@ import PyV8
 
 from doctoreval.context import Context
 
+pool = None
+
 class ProcessRequest(amp.Command):
     arguments = [("env", amp.String()), ("script", amp.String()), ("decorator", amp.String())]
     response = [("status", amp.Integer()), ("body", amp.String())]

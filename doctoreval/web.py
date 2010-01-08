@@ -1,20 +1,20 @@
 from twisted.web import server, resource
 from twisted.internet import defer
-from doctoreval.worker import ProcessRequest
+from doctoreval import worker
 
 class ScriptResource(resource.Resource):
     isLeaf = True
     
     def render_POST(self, request):
         @defer.inlineCallbacks
-        def _doWork(pp, request):
-            data = yield pp.doWork(ProcessRequest, 
+        def _doWork(request):
+            data = yield worker.pool.doWork(worker.ProcessRequest, 
                 decorator   =request.args.get('decorator', [None])[0] or "script()", 
                 script      =request.args.get('script', [None])[0], 
                 env         =request.args.get('env', [None])[0])            
             request.write(data['body'])
             request.finish()
-        _doWork(self.pp, request)
+        _doWork(request)
         return server.NOT_DONE_YET
     
         

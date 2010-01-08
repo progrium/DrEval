@@ -8,17 +8,15 @@ import sys
 
 from doctoreval import web, worker
 
+@defer.inlineCallbacks
+def start():
+    worker.pool = pool.ProcessPool(worker.Servlet, min=1, max=2, timeout=30)
+    yield worker.pool.start()
+    reactor.listenTCP(8123, server.Site(web.ScriptResource()))
+
 def main(args=None):
-    port = 8123
     log.startLogging(sys.stdout)
-    resource = web.ScriptResource()
-    @defer.inlineCallbacks
-    def run_pp():
-        pp = pool.ProcessPool(worker.Servlet, min=1, max=1, timeout=30)
-        resource.pp = pp
-        yield pp.start()
-    reactor.listenTCP(port, server.Site(resource))
-    reactor.callLater(1, run_pp)
+    reactor.callLater(0, start)
     reactor.run()
 
 if __name__ == '__main__':
