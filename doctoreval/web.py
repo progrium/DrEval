@@ -2,6 +2,8 @@ from twisted.web import server, resource
 from twisted.internet import defer
 from doctoreval import worker
 
+port = None
+
 class EvalResource(resource.Resource):
     isLeaf = True
     
@@ -11,7 +13,7 @@ class EvalResource(resource.Resource):
             data = yield worker.pool.doWork(worker.ProcessRequest, 
                 decorator   =request.args.get('decorator', [None])[0] or "script()", 
                 script      =request.args.get('script', [None])[0], 
-                env         =request.args.get('env', [None])[0])            
+                env         =request.args.get('env', [None])[0] or '')            
             request.write(data['body'])
             request.finish()
         _doWork(request)
