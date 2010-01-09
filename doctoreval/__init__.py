@@ -5,16 +5,15 @@ from ampoule import pool, main
 from doctoreval import worker, web
 
 @defer.inlineCallbacks
-def start():
-    if not worker.pool:
-        worker.pool = pool.ProcessPool(
-            worker.Servlet, 
-            min=1, 
-            max=2, 
-            timeout=30,
-            starter=main.ProcessStarter(packages=("twisted", "ampoule", "doctoreval")))
+def start(port=8123, max_workers=2, timeout=30):
+    worker.pool = pool.ProcessPool(
+        worker.MiniMe, 
+        min=1, 
+        max=max_workers, 
+        timeout=timeout,
+        starter=main.ProcessStarter(packages=("twisted", "ampoule", "doctoreval")))
     yield worker.pool.start()
-    web.port = reactor.listenTCP(8123, server.Site(web.EvalResource()))
+    web.port = reactor.listenTCP(port, server.Site(web.EvalResource()))
 
 @defer.inlineCallbacks
 def stop():

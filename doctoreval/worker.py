@@ -6,16 +6,16 @@ from doctoreval.context import Context
 
 pool = None
 
-class ProcessRequest(amp.Command):
-    arguments = [("env", amp.String()), ("script", amp.String()), ("decorator", amp.String())]
+class GetInMyBelly(amp.Command):
+    arguments = [("environment", amp.String()), ("script", amp.String()), ("input", amp.String())]
     response = [("status", amp.Integer()), ("body", amp.String())]
 
-class Servlet(child.AMPChild):
-    @ProcessRequest.responder
-    def process(self, env, script, decorator):
-        with Context(script, env) as context:
+class MiniMe(child.AMPChild):
+    @GetInMyBelly.responder
+    def process(self, script, input, environment):
+        with Context(script, input) as context:
             try:
-                output = str(context.eval(decorator))
+                output = str(context.eval(environment) or '')
             except PyV8.JSError, e:
                 output = str(e).replace("JSError: ", '')
             return {"status": 200, "body": output}

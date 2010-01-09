@@ -16,10 +16,10 @@ class Globals(PyV8.JSClass):
         return self._context.eval("_runscript(%s);" % ', '.join([simplejson.dumps(v) for v in obj.values()]))
 
 class Context(PyV8.JSContext):
-    def __init__(self, script, env):            
+    def __init__(self, script, input):            
         globals = Globals()
         super(Context, self).__init__(globals)
         globals._context = self
         globals._script = script
-        globals.env = env
+        globals.input = input
         

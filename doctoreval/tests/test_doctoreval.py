@@ -1,39 +1,71 @@
 from twisted.trial import unittest
 from twisted.internet import defer, reactor
-from twisted.web import client
-import urllib
 
 import doctoreval
+from doctoreval.tests import Bigglesworth
 
-def request(data):
-    return client.getPage(
-        url='http://localhost:8123/', 
-        method='POST', 
-        postdata=urllib.urlencode(data), 
-        headers={'Content-Type': 'application/x-www-form-urlencoded'})
-
-def Bigglesworth(f1):
-    @defer.inlineCallbacks
-    def f2(self):
-        yield doctoreval.start()
-        try:
-            defer.inlineCallbacks(f1)(self)
-        finally:
-            yield doctoreval.stop()
-    return f2
+TEST_STRING = "One million dollars!"
 
 class TestDoctorEval(unittest.TestCase):
+    @Bigglesworth(timeout=1)
+    def testTimeout(self):
+        return dict(
+            script='sleep(2)',
+            error='504 Gateway Time-out')
+    
+    @Bigglesworth()
+    def testScript(self):
+        return dict(
+            script='return 1+2',
+            result='3')
+    
+    @Bigglesworth()
+    def testInput(self):
+        return dict(
+            input=TEST_STRING, 
+            script='return input',
+            result=TEST_STRING)
+    
+    @Bigglesworth()
+    def testEnvironment(self):
+        return dict(
+            environment='"%s"' % TEST_STRING,
+            script='return null',
+            result=TEST_STRING)
+
+    @Bigglesworth()
+    def testEnvironment_ScriptLocals(self):
+        return dict(
+            environment='script({"foobar": "%s"})' % TEST_STRING, 
+            script='return foobar',
+            result=TEST_STRING)
+    
+    @Bigglesworth()
+    def testEnvironment_OutputFilter(self):
+        return dict(
+            environment="""
+                output = script();
+                output.toUpperCase();
+                """, 
+            script='return "%s"' % TEST_STRING,
+            result=TEST_STRING.upper())
+    
+    @Bigglesworth()
+    def testEnvironment_Function(self):
+        return dict(
+            environment="""
+                function foobar() { return "%s"; }
+                script()
+                """ % TEST_STRING, 
+            script='return foobar()',
+            result=TEST_STRING)
+    
+    
     def setUp(self):
         """
-        The only reason why this method exists is to let 'trial ampoule'
-        to install the signal handlers (#3178 for reference).
+        This is to install the ampoule signal handlers (#3178 for reference).
         """
         super(TestDoctorEval, self).setUp()
         d = defer.Deferred()
         reactor.callLater(0, d.callback, None)
         return d
-    
-    @Bigglesworth
-    def test_Eval(self):
-        resp = yield request({'script':'return 1+2'})
-        self.assertEqual(resp, '3')
