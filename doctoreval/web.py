@@ -3,6 +3,24 @@ from twisted.internet import defer, error
 from doctoreval import worker
 
 port = None
+page = """
+<html>
+  <head>
+    <title>Dr Eval</title>
+  </head>
+  <body>
+    <form action="/" method="post">
+      Environment:<br />
+      <textarea name="environment"></textarea><br />
+      Script:<br />
+      <textarea name="script"></textarea><br />
+      Input:<br />
+      <textarea name="input"></textarea><br />
+      <input type="submit" value="Go" />
+    </form>
+  </body>
+</html>
+"""
 
 class EvalResource(resource.Resource):
     isLeaf = True
@@ -30,21 +48,4 @@ class EvalResource(resource.Resource):
         
     
     def render_GET(self, request):
-        return """
-<html>
-  <head>
-    <title>Dr Eval</title>
-  </head>
-  <body>
-    <form action="/" method="post">
-        Environment:<br />
-        <textarea name="environment"></textarea><br />
-        Script:<br />
-        <textarea name="script"></textarea><br />
-        Input:<br />
-        <textarea name="input"></textarea><br />
-        <input type="submit" value="Go" />
-    </form>
-  </body>
-</html>
-"""
+        return page

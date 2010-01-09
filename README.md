@@ -29,7 +29,10 @@ The script code needs to return something for output, unless the environment giv
 
 ### Builtin Environment
 Besides the input variable and anything else you'd expect in a V8 ECMAScript environment, there a couple of functions exposed by DrEval. More coming soon.
- 
+
+- **load(url)**   
+  Loads a JavaScript file from a URL into the context. Returns true on success, throws exception on failure.
+
 - **sleep(seconds)**   
   Sleeps for a number of seconds. Used by DrEval tests. Returns null.
 

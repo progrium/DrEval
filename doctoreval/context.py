@@ -1,11 +1,18 @@
 import PyV8
 import time
 import simplejson
+import urllib2
 
 class Globals(PyV8.JSClass):
     def sleep(self, seconds):
         time.sleep(float(seconds))
-        return None
+    
+    def load(self, url):
+        try:
+            self._context.eval(urllib2.urlopen(url).read())
+            return True
+        except (urllib2.HTTPError, urllib2.URLError), e:
+            self._context.throw(str(e))
     
     def script(self, obj={}):
         obj = PyV8.convert(obj)
@@ -20,3 +27,8 @@ class Context(PyV8.JSContext):
         globals._script = script
         globals.input = input
         
+    def convert(self, obj):
+        return simplejson.dumps(obj)
+        
+    def throw(self, message, description=""):
+        self.eval("""throw new Error(%s, %s)""" % (self.convert(message), self.convert(description)))

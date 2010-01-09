@@ -2,6 +2,7 @@ from twisted.trial import unittest
 from twisted.internet import defer, reactor
 
 import doctoreval
+from doctoreval import web
 from doctoreval.tests import Bigglesworth
 
 TEST_STRING = "One million dollars!"
@@ -12,6 +13,27 @@ class TestDoctorEval(unittest.TestCase):
         return dict(
             script='sleep(2)',
             error='504 Gateway Time-out')
+    
+    @Bigglesworth()
+    def testJson(self):
+        import simplejson
+        return dict(
+            script="""return JSON.stringify(JSON.parse('[1,2,3,{"foo":"bar"}]'))""",
+            result=simplejson.dumps([1,2,3,{"foo":"bar"}], separators=(',',':')))
+    
+    @Bigglesworth()
+    def testLoadSuccess(self):
+        address = web.port.getHost()
+        web.page = """function foobar() { return "%s"; }""" % TEST_STRING
+        return dict(
+            script="load('http://%s:%s'); return foobar()" % (address.host, address.port),
+            result=TEST_STRING)
+    
+    @Bigglesworth()
+    def testLoadFailure(self):
+        return dict(
+            script="""try { load('http://localhost:1') } catch (e) { return '%s' }""" % TEST_STRING,
+            result=TEST_STRING)
     
     @Bigglesworth()
     def testScript(self):
@@ -30,7 +52,7 @@ class TestDoctorEval(unittest.TestCase):
     def testEnvironment(self):
         return dict(
             environment='"%s"' % TEST_STRING,
-            script='return null',
+            script='',
             result=TEST_STRING)
 
     @Bigglesworth()
