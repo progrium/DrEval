@@ -7,9 +7,6 @@ class Globals(PyV8.JSClass):
         time.sleep(float(seconds))
         return None
     
-    def upper(self, string):
-        return string.upper()
-    
     def script(self, obj={}):
         obj = PyV8.convert(obj)
         self._context.eval("function _runscript(%s) { %s }" % (', '.join(obj.keys()), self._script))
