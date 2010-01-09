@@ -1,18 +1,10 @@
 #!/usr/bin/env python
 
 from twisted.python import log
-from twisted.internet import reactor, defer
-from twisted.web import server
-from ampoule import pool
+from twisted.internet import reactor
 import sys
 
-from doctoreval import web, worker
-
-@defer.inlineCallbacks
-def start():
-    worker.pool = pool.ProcessPool(worker.Servlet, min=1, max=2, timeout=30)
-    yield worker.pool.start()
-    reactor.listenTCP(8123, server.Site(web.EvalResource()))
+from doctoreval import start
 
 def main(args=None):
     log.startLogging(sys.stdout)
