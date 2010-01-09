@@ -19,19 +19,22 @@ You can run the tests to be sure everything is OK:
 
 Using DrEval
 ------------
-Once DrEval is running, which you can start with `dreval`, there is a web server running on port 8123. Simply POST to it with these parameters:
+You can start DrEval with `dreval`, which will start a web server running on port 8123. Simply POST to it with these parameters:
 
 - **script** Required. JavaScript code that returns some output
 - **input** Optional. Data that will be available for the script to access via variable `input`
 - **environment** Optional. JavaScript to set up the eval environment and call the script with `script()`
 
-The script code needs to return something for output, unless the environment gives it another means. The final output is determined by basically eval(environment), so environment does not need to explicitly return a value. The default value of environment is `script()`. 
+The script code needs to return something for output, unless the environment gives it another means. The final output is determined by basically eval(environment), so environment does not need to explicitly return a value. The default value of environment is simply `script()`. 
 
 ### Builtin Environment
 Besides the input variable and anything else you'd expect in a V8 ECMAScript environment, there a couple of functions exposed by DrEval. More coming soon.
  
-- **sleep(seconds) -> null** Sleeps for a number of seconds. Used by DrEval tests.
-- **script(locals={}) -> ??** For environment to invoke the script code, provided an optional object of locals.
+- **sleep(seconds)** 
+  Sleeps for a number of seconds. Used by DrEval tests. Returns null.
+
+- **script(locals={})** 
+  For the environment to invoke the script code, providing an optional object of locals. Returns whatever the script code returns.
 
 License
 -------
