@@ -30,7 +30,7 @@ The script code needs to return something for output, unless the environment giv
 ### Builtin Environment
 Besides the input variable and anything else you'd expect in a V8 ECMAScript environment, there a couple of functions exposed by DrEval. More coming soon.
 
-- **fetch(url, postdata, headers)**
+- **fetch(url, postdata, headers)**   
   Performs an HTTP request to a URL, with optional post data and request headers (both objects). The method is GET unless postdata is set, in which case it's POST. Returns an object of {content, code, headers} or throws exception on failure.
 
 - **load(url)**   
