@@ -12,11 +12,11 @@ page = """
   <body>
     <form action="/" method="post">
       Environment:<br />
-      <textarea name="environment"></textarea><br />
+      <textarea name="environment">script()</textarea><br />
       Script:<br />
-      <textarea name="script"></textarea><br />
+      <textarea name="script">return "Hi from " + input;</textarea><br />
       Input:<br />
-      <textarea name="input"></textarea><br />
+      <textarea name="input">DrEval</textarea><br />
       <input type="submit" value="Go" />
     </form>
   </body>
