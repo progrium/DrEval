@@ -2,3 +2,5 @@ _trial_temp
 **/*.pyc
 *.pyc
 *.egg-info
+twistd.*
+twisted/plugins/dropin.cache

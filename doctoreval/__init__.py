@@ -1,5 +1,6 @@
 from twisted.internet import defer, reactor
 from twisted.web import server
+from twisted.application.service import Service
 from ampoule import pool, main
 
 from doctoreval import worker, web
@@ -22,3 +23,14 @@ def start(port=8123, max_workers=2, timeout=30):
 def stop():
     yield worker.pool.stop()
     yield web.port.stopListening()
+
+class DrEvalService(Service):
+    def __init__(self, *args, **kw_args):
+        self.args = args
+        self.kw_args = kw_args
+        
+    def startService(self):
+        return start(*self.args, **self.kw_args)
+    
+    def stopServcie(self):
+        return stop()
