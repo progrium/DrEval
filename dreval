@@ -8,8 +8,9 @@ from doctoreval import start
 
 def main(args=None):
     log.startLogging(sys.stdout)
-    reactor.callLater(0, start)
+    port = int(args[args.index('-p') + 1]) if '-p' in args else 8123
+    reactor.callLater(0, start, port=port)
     reactor.run()
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)

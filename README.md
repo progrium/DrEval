@@ -19,7 +19,7 @@ You can run the tests to be sure everything is OK:
 
 Using DrEval
 ------------
-You can start DrEval with `dreval`, which will start a web server running on port 8123. Simply POST to it with these parameters:
+You can start DrEval with `dreval -p 8123` or with twistd `twistd -n dreval -p 8123`, both of which will launch a web server running on port 8123. Simply POST to it with these parameters:
 
 - **script** Required. JavaScript code that returns some output
 - **input** Optional. Data that will be available for the script to access via variable `input`
