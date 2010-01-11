@@ -22,6 +22,7 @@ def Bigglesworth(*args, **kw_args):
         def wrapped_f(self):
             yield doctoreval.start(*args, **kw_args)
             try:
+                self.url = 'http://%s:%s' % (web.port.getHost().host, web.port.getHost().port)
                 test = f(self)
                 try:
                     resp = yield request(test)

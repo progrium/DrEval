@@ -1,6 +1,7 @@
 from twisted.web import server, resource, http
 from twisted.internet import defer, error
 from doctoreval import worker
+from types import LambdaType
 
 port = None
 page = """
@@ -48,4 +49,4 @@ class EvalResource(resource.Resource):
         
     
     def render_GET(self, request):
-        return page
+        return page(request) if type(page) is LambdaType else page

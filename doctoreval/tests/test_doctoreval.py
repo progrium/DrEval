@@ -22,17 +22,50 @@ class TestDoctorEval(unittest.TestCase):
             result=simplejson.dumps([1,2,3,{"foo":"bar"}], separators=(',',':')))
     
     @Bigglesworth()
-    def testLoadSuccess(self):
-        address = web.port.getHost()
+    def testLoad_Success(self):
         web.page = """function foobar() { return "%s"; }""" % TEST_STRING
         return dict(
-            script="load('http://%s:%s'); return foobar()" % (address.host, address.port),
+            script="load('%s'); return foobar()" % self.url,
             result=TEST_STRING)
     
     @Bigglesworth()
-    def testLoadFailure(self):
+    def testLoad_Failure(self):
         return dict(
             script="""try { load('http://localhost:1') } catch (e) { return '%s' }""" % TEST_STRING,
+            result=TEST_STRING)
+    
+    @Bigglesworth()
+    def testFetch_Get(self):
+        web.page = TEST_STRING
+        return dict(
+            script="""return fetch('%s').content""" % self.url,
+            result=TEST_STRING)
+        
+    @Bigglesworth()
+    def testFetch_Code(self):
+        web.page = TEST_STRING
+        return dict(
+            script="""return fetch('%s').code""" % self.url,
+            result='200')
+    
+    @Bigglesworth()
+    def testFetch_RequestHeaders(self):
+        web.page = lambda r: r.getHeader('x-test')
+        return dict(
+            script="""return fetch('%s', null, {'x-test': '%s'}).content""" % (self.url, TEST_STRING),
+            result=TEST_STRING)
+    
+    @Bigglesworth()
+    def testFetch_ResponseHeaders(self):
+        web.page = TEST_STRING
+        return dict(
+            script="""return fetch('%s').headers['content-length']""" % self.url,
+            result=str(len(TEST_STRING)))
+    
+    @Bigglesworth()
+    def testFetch_Post(self):
+        return dict(
+            script="""return fetch('%s', {'script':'return "%s"'}).content""" % (self.url, TEST_STRING),
             result=TEST_STRING)
     
     @Bigglesworth()

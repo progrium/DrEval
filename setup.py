@@ -1,13 +1,14 @@
 from setuptools import setup
+import doctoreval
 
 setup(
   name = "DrEval",
-  version="0.1.0",
+  version=doctoreval.__version__,
   description="Eval as a (Web) Service powered by V8",
   
   author="Jeff Lindsay",
   author_email="progrium@gmail.com",
-  url="http://github.com/progrium/DrEval",
+  url=doctoreval.__url__,
   download_url="http://github.com/progrium/DrEval/tarball/master",
   classifiers=[
     ],

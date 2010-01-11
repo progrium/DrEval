@@ -4,6 +4,9 @@ from ampoule import pool, main
 
 from doctoreval import worker, web
 
+__version__ = '0.1.0'
+__url__ = "http://github.com/progrium/DrEval"
+
 @defer.inlineCallbacks
 def start(port=8123, max_workers=2, timeout=30):
     worker.pool = pool.ProcessPool(

@@ -1,11 +1,31 @@
 import PyV8
 import time
 import simplejson
-import urllib2
+import urllib, urllib2
+import doctoreval
+
+class JSObject(PyV8.JSClass):
+    """
+    This makes Python dicts working objects in JavaScript.
+    It's fixed in PyV8 SVN, so this only is temporary.
+    """
+    def __init__(self, d):
+        self.__dict__ = d
 
 class Globals(PyV8.JSClass):
     def sleep(self, seconds):
         time.sleep(float(seconds))
+    
+    def fetch(self, url, postdata=None, headers={}):
+        try:
+            if postdata:
+                postdata = urllib.urlencode(PyV8.convert(postdata))
+            r = urllib2.Request(url=url, data=postdata, headers=PyV8.convert(headers))
+            r.add_header('user-agent', 'DrEvalFetch/%s (%s)' % (doctoreval.__version__, doctoreval.__url__))
+            f = urllib2.urlopen(r)
+            return JSObject({"content": f.read(), "code": f.getcode(), "headers": JSObject(f.info().dict)})
+        except (urllib2.HTTPError, urllib2.URLError), e:
+            self._context.throw(str(e))
     
     def load(self, url):
         try:
