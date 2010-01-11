@@ -13,6 +13,7 @@ setup(
   classifiers=[
     ],
   packages=['doctoreval'],
+  data_files=[('twisted/plugins', ['twisted/plugins/dreval_plugin.py'])],
   scripts=['dreval'],
   install_requires = [
       'simplejson>=2',
